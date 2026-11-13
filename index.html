@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Envie suas fotos</title>
+<style>
+  /* ===== CORES DO EVENTO (troque à vontade) ===== */
+  :root {
+    --cor-principal: #8B5E3C;
+    --cor-fundo: #FBF7F2;
+    --cor-texto: #2B2B2B;
+    --cor-sucesso: #2E7D4F;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--cor-fundo);
+    color: var(--cor-texto);
+    font-size: 20px;
+    line-height: 1.4;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 18px;
+  }
+  main { width: 100%; max-width: 440px; text-align: center; }
+  h1 { font-size: 30px; margin: 0 0 6px; color: var(--cor-principal); }
+  .subtitulo { margin: 0 0 28px; font-size: 20px; }
+
+  .botao {
+    display: block;
+    width: 100%;
+    padding: 26px 16px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--cor-principal);
+    border: none;
+    border-radius: 18px;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(0,0,0,.15);
+  }
+  .botao:active { transform: scale(.98); }
+  .botao-secundario {
+    background: transparent;
+    color: var(--cor-principal);
+    border: 3px solid var(--cor-principal);
+    box-shadow: none;
+    font-size: 22px;
+    padding: 18px 16px;
+    margin-top: 16px;
+  }
+  .icone { font-size: 40px; display: block; margin-bottom: 6px; }
+
+  label.nome { display: block; text-align: left; margin-top: 28px; font-size: 18px; }
+  input[type="text"] {
+    width: 100%;
+    margin-top: 6px;
+    padding: 14px;
+    font-size: 20px;
+    border: 2px solid #ccc;
+    border-radius: 12px;
+  }
+  input[type="file"] { display: none; }
+
+  .barra { height: 22px; background: #e6e0d8; border-radius: 11px; overflow: hidden; margin: 22px 0 12px; }
+  .barra > div { height: 100%; width: 0; background: var(--cor-principal); transition: width .3s; }
+  .grande { font-size: 24px; font-weight: 700; }
+  .aviso { font-size: 18px; color: #555; }
+  .sucesso .grande { color: var(--cor-sucesso); font-size: 30px; }
+  .erro { color: #B3261E; }
+
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+
+  <!-- TELA 1: inicial -->
+  <section id="telaInicio">
+    <h1 id="titulo">Nome do Evento</h1>
+    <p class="subtitulo">Mande pra gente as fotos que você tirou! 📸</p>
+
+    <button class="botao" id="btnEscolher">
+      <span class="icone">🖼️</span>
+      Enviar minhas fotos
+    </button>
+    <input type="file" id="arquivos" accept="image/*" multiple>
+
+    <label class="nome" for="nome">Seu nome (se quiser):
+      <input type="text" id="nome" autocomplete="name" placeholder="Ex.: Tia Maria">
+    </label>
+  </section>
+
+  <!-- TELA 2: enviando -->
+  <section id="telaEnviando" hidden>
+    <p class="grande">Enviando suas fotos…</p>
+    <div class="barra"><div id="progresso"></div></div>
+    <p id="contador" class="grande">0 de 0</p>
+    <p class="aviso">Não feche esta tela até terminar.</p>
+  </section>
+
+  <!-- TELA 3: final -->
+  <section id="telaFim" class="sucesso" hidden>
+    <p class="icone">💛</p>
+    <p class="grande" id="msgFinal">Obrigado!</p>
+    <p id="msgDetalhe"></p>
+    <button class="botao" id="btnMais">Enviar mais fotos</button>
+    <button class="botao botao-secundario" id="btnTentar" hidden>Tentar de novo as que faltaram</button>
+  </section>
+
+</main>
+
+<script>
+  // ===== CONFIGURAÇÃO (preencha aqui) =====
+  const NOME_DO_EVENTO = 'Casamento Ana & Pedro';
+  const URL_DO_SCRIPT  = 'COLE_AQUI_A_URL_DO_APPS_SCRIPT_TERMINADA_EM_/exec';
+  const CHAVE_EVENTO   = 'troque-esta-frase-123'; // igual à do Code.gs
+  const LADO_MAXIMO    = 2400;  // pixels; reduz o peso sem perder qualidade visível
+  const QUALIDADE_JPEG = 0.88;
+  // ========================================
+
+  const $ = id => document.getElementById(id);
+  $('titulo').textContent = NOME_DO_EVENTO;
+  document.title = 'Fotos - ' + NOME_DO_EVENTO;
+
+  // Lembra o nome digitado na próxima vez
+  try { $('nome').value = localStorage.getItem('nomeConvidado') || ''; } catch (e) {}
+
+  let pendentes = [];
+
+  $('btnEscolher').onclick = () => $('arquivos').click();
+  $('btnMais').onclick = () => { mostrar('telaInicio'); $('arquivos').click(); };
+  $('btnTentar').onclick = () => enviarTodas(pendentes);
+
+  $('arquivos').onchange = e => {
+    const lista = Array.from(e.target.files || []);
+    e.target.value = '';
+    if (lista.length) enviarTodas(lista);
+  };
+
+  function mostrar(tela) {
+    ['telaInicio', 'telaEnviando', 'telaFim'].forEach(t => $(t).hidden = (t !== tela));
+  }
+
+  async function enviarTodas(lista) {
+    const nome = $('nome').value.trim();
+    try { localStorage.setItem('nomeConvidado', nome); } catch (e) {}
+
+    mostrar('telaEnviando');
+    const falharam = [];
+    for (let i = 0; i < lista.length; i++) {
+      $('contador').textContent = (i + 1) + ' de ' + lista.length;
+      $('progresso').style.width = (i / lista.length * 100) + '%';
+      const deuCerto = await enviarComTentativas(lista[i], nome);
+      if (!deuCerto) falharam.push(lista[i]);
+    }
+    $('progresso').style.width = '100%';
+    pendentes = falharam;
+    terminar(lista.length, falharam.length);
+  }
+
+  function terminar(total, erros) {
+    const enviadas = total - erros;
+    if (erros === 0) {
+      $('msgFinal').textContent = 'Pronto! Obrigado! 🎉';
+      $('msgDetalhe').textContent = enviadas === 1 ? 'Sua foto foi enviada.' : 'Suas ' + enviadas + ' fotos foram enviadas.';
+      $('msgFinal').classList.remove('erro');
+      $('btnTentar').hidden = true;
+    } else {
+      $('msgFinal').textContent = enviadas ? 'Quase tudo certo!' : 'Não conseguimos enviar';
+      $('msgDetalhe').textContent = enviadas + ' enviada(s). ' + erros + ' não foi(foram). Verifique a internet e toque no botão abaixo.';
+      $('msgFinal').classList.toggle('erro', enviadas === 0);
+      $('btnTentar').hidden = false;
+    }
+    mostrar('telaFim');
+  }
+
+  async function enviarComTentativas(arquivo, nome) {
+    let preparado;
+    try { preparado = await prepararFoto(arquivo); }
+    catch (e) { return false; }
+
+    for (let tentativa = 1; tentativa <= 3; tentativa++) {
+      try {
+        const r = await fetch(URL_DO_SCRIPT, {
+          method: 'POST',
+          redirect: 'follow',
+          // text/plain evita bloqueio de CORS no Google Apps Script
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            chave: CHAVE_EVENTO,
+            convidado: nome,
+            nomeArquivo: arquivo.name || 'foto',
+            tipo: preparado.tipo,
+            base64: preparado.base64
+          })
+        });
+        const json = await r.json();
+        if (json.ok) return true;
+        if (/chave|tipo|grande/.test(json.erro || '')) return false; // não adianta repetir
+      } catch (e) { /* rede instável: tenta de novo */ }
+      await new Promise(ok => setTimeout(ok, 1500 * tentativa));
+    }
+    return false;
+  }
+
+  // Reduz a foto para no máximo LADO_MAXIMO px (fica bem mais leve).
+  // Se o navegador não conseguir abrir a imagem, envia o arquivo original.
+  async function prepararFoto(arquivo) {
+    try {
+      const img = await carregarImagem(arquivo);
+      const escala = Math.min(1, LADO_MAXIMO / Math.max(img.width, img.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width * escala);
+      canvas.height = Math.round(img.height * escala);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL('image/jpeg', QUALIDADE_JPEG);
+      return { tipo: 'image/jpeg', base64: dataUrl.split(',')[1] };
+    } catch (e) {
+      const dataUrl = await lerComoDataURL(arquivo);
+      return { tipo: arquivo.type || 'image/jpeg', base64: dataUrl.split(',')[1] };
+    }
+  }
+
+  function carregarImagem(arquivo) {
+    return new Promise((ok, falha) => {
+      const url = URL.createObjectURL(arquivo);
+      const img = new Image();
+      img.onload = () => { URL.revokeObjectURL(url); ok(img); };
+      img.onerror = () => { URL.revokeObjectURL(url); falha(new Error('imagem')); };
+      img.src = url;
+    });
+  }
+
+  function lerComoDataURL(arquivo) {
+    return new Promise((ok, falha) => {
+      const leitor = new FileReader();
+      leitor.onload = () => ok(leitor.result);
+      leitor.onerror = falha;
+      leitor.readAsDataURL(arquivo);
+    });
+  }
+</script>
+</body>
+</html>
