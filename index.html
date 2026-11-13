@@ -2,249 +2,416 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Envie suas fotos</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#13251B">
+<title>15 anos · Milena Acosta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Pinyon+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tema.css">
+<link rel="preload" as="image" href="imagens/envelope.jpg">
 <style>
-  /* ===== CORES DO EVENTO (troque à vontade) ===== */
-  :root {
-    --cor-principal: #8B5E3C;
-    --cor-fundo: #FBF7F2;
-    --cor-texto: #2B2B2B;
-    --cor-sucesso: #2E7D4F;
+  /* ===== ETAPA 2: ENVELOPE DE ABERTURA ===== */
+
+  /* Recorte do envelope dentro da foto imagens/envelope.jpg.
+     Se trocar a foto, ajuste estes números (em pixels da foto original). */
+  .envelope {
+    --foto-larg: 1280;  --foto-alt: 853;   /* tamanho da foto inteira   */
+    --env-x: 285;       --env-y: 45;       /* canto superior do envelope */
+    --env-larg: 710;    --env-alt: 775;    /* tamanho do envelope        */
+
+    --w: min(88vw, calc(74svh * 710 / 775), 520px);  /* largura na tela */
+    --escala: calc(var(--w) / var(--env-larg));
   }
 
-  * { box-sizing: border-box; }
-  body {
+  body.fechado { overflow: hidden; }
+
+  #abertura {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    padding: 16px;
+    transition: opacity .9s ease;
+  }
+  #abertura.sumindo { opacity: 0; pointer-events: none; }
+
+  .envelope {
+    position: relative;
+    width: var(--w);
+    aspect-ratio: 710 / 775;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    perspective: 1600px;
+    filter: drop-shadow(0 28px 40px rgba(0,0,0,.55));
+    -webkit-tap-highlight-color: transparent;
+  }
+  .envelope:focus-visible { outline: 2px solid var(--prata); outline-offset: 8px; }
+
+  /* Interior que aparece quando as abas abrem */
+  .interior {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at center, #fbf8f4 0%, var(--marfim) 60%, #d9d2c8 100%);
+    box-shadow: inset 0 0 40px rgba(0,0,0,.35);
+  }
+
+  .aba {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background-image: url("imagens/envelope.jpg");
+    background-repeat: no-repeat;
+    background-size: calc(var(--foto-larg) * var(--escala)) calc(var(--foto-alt) * var(--escala));
+    backface-visibility: hidden;
+    transition: transform 1.6s cubic-bezier(.6,.05,.25,1);
+  }
+  .aba-esq {
+    left: 0;
+    transform-origin: left center;
+    background-position:
+      calc(var(--env-x) * var(--escala) * -1)
+      calc(var(--env-y) * var(--escala) * -1);
+  }
+  .aba-dir {
+    right: 0;
+    transform-origin: right center;
+    background-position:
+      calc((var(--env-x) + var(--env-larg) / 2) * var(--escala) * -1)
+      calc(var(--env-y) * var(--escala) * -1);
+  }
+
+  /* Brilho pulsante em volta do selo, convidando ao toque */
+  .halo {
+    position: absolute;
+    left: 50%;
+    top: 45.4%;
+    width: 26%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 0 rgba(236,238,236,.55);
+    animation: pulso 2.2s ease-out infinite;
+    pointer-events: none;
+  }
+  @keyframes pulso {
+    0%   { box-shadow: 0 0 0 0 rgba(236,238,236,.5); }
+    70%  { box-shadow: 0 0 0 calc(var(--w) * .07) rgba(236,238,236,0); }
+    100% { box-shadow: 0 0 0 0 rgba(236,238,236,0); }
+  }
+
+  .dica {
     margin: 0;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    background: var(--cor-fundo);
-    color: var(--cor-texto);
-    font-size: 20px;
-    line-height: 1.4;
-    min-height: 100vh;
+    font-size: clamp(18px, 4.6vw, 22px);
+    font-style: italic;
+    letter-spacing: .04em;
+    transition: opacity .4s;
+  }
+
+  /* Estado aberto */
+  .abrindo .aba-esq { transform: rotateY(-105deg); }
+  .abrindo .aba-dir { transform: rotateY(105deg); }
+  .abrindo .halo,
+  .abrindo .dica { opacity: 0; animation: none; }
+
+  /* ===== ETAPA 3: CONVITE (cartão marfim) ===== */
+  #convite {
+    min-height: 100svh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px 18px;
+    padding: 28px 16px;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 1s ease .2s, transform 1s ease .2s;
   }
-  main { width: 100%; max-width: 440px; text-align: center; }
-  h1 { font-size: 30px; margin: 0 0 6px; color: var(--cor-principal); }
-  .subtitulo { margin: 0 0 28px; font-size: 20px; }
+  .aberto #convite { opacity: 1; transform: none; }
 
-  .botao {
+  .cartao {
+    /* Tudo no cartão é proporcional à largura dele (--c).
+       --s converte "pixels da foto imagens/convite.jpg (853 px de largura)" para a tela. */
+    --c: min(calc(100vw - 32px), 460px);
+    --s: calc(var(--c) / 853);
+    position: relative;
+    width: var(--c);
+    padding: calc(95 * var(--s)) calc(70 * var(--s)) calc(110 * var(--s));
+    background-color: #EAE6E0;
+    background-image:
+      radial-gradient(ellipse at 50% 40%, rgba(255,255,255,.55), transparent 70%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .4 0 0 0 0 .38 0 0 0 0 .35 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    color: var(--grafite);
+    text-align: center;
+    font-variant-numeric: lining-nums;
+    box-shadow: 0 26px 60px rgba(0,0,0,.55);
+    --gravado: 0 1px 0 rgba(255,255,255,.85), 0 -1px 1px rgba(0,0,0,.2);
+    text-shadow: var(--gravado);
+  }
+
+  /* Moldura fina */
+  .moldura {
+    position: absolute;
+    inset: calc(27 * var(--s));
+    border: 1.5px solid rgba(59,59,57,.6);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 1px 0 rgba(255,255,255,.7);
+    pointer-events: none;
+  }
+
+  /* Recortes de ornamentos da foto do convite */
+  .recorte {
+    position: absolute;
+    background-image: url("imagens/convite.jpg");
+    background-repeat: no-repeat;
+    background-size: calc(853 * var(--s)) calc(1280 * var(--s));
+    pointer-events: none;
+    /* Clareia o papel da foto e funde com o fundo do cartão */
+    filter: grayscale(1) brightness(1.1) contrast(1.05);
+    mix-blend-mode: multiply;
+  }
+  .canto {
+    width: calc(250 * var(--s));
+    height: calc(225 * var(--s));
+    background-position: 0 0;
+    -webkit-mask-image: radial-gradient(ellipse 100% 100% at 0 0, #000 70%, transparent 100%);
+            mask-image: radial-gradient(ellipse 100% 100% at 0 0, #000 70%, transparent 100%);
+  }
+  .canto.se { top: 0; left: 0; }
+  .canto.sd { top: 0; right: 0; transform: scaleX(-1); }
+  .canto.ie { bottom: 0; left: 0; transform: scaleY(-1); }
+  .canto.id { bottom: 0; right: 0; transform: scale(-1, -1); }
+  .flor {
     display: block;
-    width: 100%;
-    padding: 26px 16px;
-    font-size: 26px;
-    font-weight: 700;
-    color: #fff;
-    background: var(--cor-principal);
-    border: none;
-    border-radius: 18px;
-    cursor: pointer;
-    box-shadow: 0 6px 16px rgba(0,0,0,.15);
+    position: relative;
+    margin: 0 auto;
+    width: calc(270 * var(--s));
+    height: calc(95 * var(--s));
+    background-position: calc(-292 * var(--s)) calc(-95 * var(--s));
+    -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 75%, transparent 100%);
+            mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 75%, transparent 100%);
   }
-  .botao:active { transform: scale(.98); }
-  .botao-secundario {
-    background: transparent;
-    color: var(--cor-principal);
-    border: 3px solid var(--cor-principal);
-    box-shadow: none;
-    font-size: 22px;
-    padding: 18px 16px;
-    margin-top: 16px;
+
+  .idade {
+    display: flex;
+    align-items: center;
+    gap: calc(28 * var(--s));
+    margin: calc(28 * var(--s)) calc(20 * var(--s)) 0;
+    font-size: calc(68 * var(--s));
+    font-weight: 500;
+    line-height: 1;
   }
-  .icone { font-size: 40px; display: block; margin-bottom: 6px; }
-
-  label.nome { display: block; text-align: left; margin-top: 28px; font-size: 18px; }
-  input[type="text"] {
-    width: 100%;
-    margin-top: 6px;
-    padding: 14px;
-    font-size: 20px;
-    border: 2px solid #ccc;
-    border-radius: 12px;
+  .idade::before, .idade::after {
+    content: "";
+    flex: 1;
+    height: 1.5px;
+    background: currentColor;
+    opacity: .7;
   }
-  input[type="file"] { display: none; }
 
-  .barra { height: 22px; background: #e6e0d8; border-radius: 11px; overflow: hidden; margin: 22px 0 12px; }
-  .barra > div { height: 100%; width: 0; background: var(--cor-principal); transition: width .3s; }
-  .grande { font-size: 24px; font-weight: 700; }
-  .aviso { font-size: 18px; color: #555; }
-  .sucesso .grande { color: var(--cor-sucesso); font-size: 30px; }
-  .erro { color: #B3261E; }
+  .nome {
+    margin: calc(30 * var(--s)) calc(-30 * var(--s)) 0;
+    font-family: var(--fonte-script);
+    font-size: calc(132 * var(--s));
+    font-weight: 400;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
 
-  [hidden] { display: none !important; }
+  .divisor {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: calc(6 * var(--s));
+    margin: calc(26 * var(--s)) auto;
+    width: 82%;
+  }
+  .divisor::before, .divisor::after {
+    content: "";
+    flex: 1;
+    height: 1.5px;
+    background: currentColor;
+    opacity: .65;
+  }
+  .divisor svg { fill: currentColor; filter: drop-shadow(0 1px 0 rgba(255,255,255,.8)); }
+  .divisor .p { width: calc(22 * var(--s)); }
+  .divisor .g { width: calc(54 * var(--s)); }
+
+  .infos {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    display: inline-flex;
+    flex-direction: column;
+    gap: calc(22 * var(--s));
+    text-align: left;
+    font-size: calc(44 * var(--s));
+    line-height: 1.15;
+  }
+  .infos li, .infos a {
+    display: flex;
+    align-items: center;
+    gap: calc(30 * var(--s));
+  }
+  .infos svg, .confirmar svg {
+    flex: none;
+    width: calc(64 * var(--s));
+    height: calc(64 * var(--s));
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 1px 0 rgba(255,255,255,.8));
+  }
+  .infos .data { font-size: calc(54 * var(--s)); letter-spacing: .04em; }
+
+  a { color: inherit; text-decoration: none; }
+  .infos a span {
+    border-bottom: 1px dotted rgba(59,59,57,.55);
+  }
+  .infos a:hover span, .infos a:focus-visible span { border-bottom-style: solid; }
+  .seta { font-size: .8em; opacity: .6; margin-left: -.4em; }
+
+  .confirmar {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(22 * var(--s));
+    margin-top: calc(4 * var(--s));
+    padding: calc(18 * var(--s)) calc(40 * var(--s));
+    border: 1.5px solid rgba(59,59,57,.6);
+    border-radius: 999px;
+    font-size: calc(42 * var(--s));
+    font-weight: 600;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 1px 0 rgba(255,255,255,.7);
+    transition: background-color .2s;
+  }
+  .confirmar:hover, .confirmar:focus-visible { background-color: rgba(59,59,57,.07); }
+  .prazo {
+    margin: calc(16 * var(--s)) 0 0;
+    font-size: calc(40 * var(--s));
+    font-style: italic;
+  }
+
+  .conteudo { position: relative; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .aba, #convite, #abertura { transition-duration: .01s; transition-delay: 0s; }
+    .halo { animation: none; }
+  }
 </style>
 </head>
-<body>
-<main>
+<body class="fundo-cetim fechado">
 
-  <!-- TELA 1: inicial -->
-  <section id="telaInicio">
-    <h1 id="titulo">Aniversário de 15 anos!</h1>
-    <p class="subtitulo">Mande pra gente as fotos que você tirou! 📸</p>
-
-    <button class="botao" id="btnEscolher">
-      <span class="icone">🖼️</span>
-      Enviar minhas fotos
+  <!-- ETAPA 2: envelope fechado -->
+  <section id="abertura" class="fundo-cetim">
+    <button class="envelope" id="envelope" aria-label="Abrir o convite">
+      <span class="interior"></span>
+      <span class="aba aba-esq"></span>
+      <span class="aba aba-dir"></span>
+      <span class="halo"></span>
     </button>
-    <input type="file" id="arquivos" accept="image/*" multiple>
-
-    <label class="nome" for="nome">Seu nome (se quiser):
-      <input type="text" id="nome" autocomplete="name" placeholder="Ex.: Tia Maria">
-    </label>
+    <p class="dica texto-prata">Toque no selo para abrir</p>
   </section>
 
-  <!-- TELA 2: enviando -->
-  <section id="telaEnviando" hidden>
-    <p class="grande">Enviando suas fotos…</p>
-    <div class="barra"><div id="progresso"></div></div>
-    <p id="contador" class="grande">0 de 0</p>
-    <p class="aviso">Não feche esta tela até terminar.</p>
-  </section>
+  <!-- ETAPA 3: convite -->
+  <main id="convite">
+    <article class="cartao">
+      <div class="moldura"></div>
+      <span class="recorte canto se"></span>
+      <span class="recorte canto sd"></span>
+      <span class="recorte canto ie"></span>
+      <span class="recorte canto id"></span>
 
-  <!-- TELA 3: final -->
-  <section id="telaFim" class="sucesso" hidden>
-    <p class="icone">💛</p>
-    <p class="grande" id="msgFinal">Obrigado!</p>
-    <p id="msgDetalhe"></p>
-    <button class="botao" id="btnMais">Enviar mais fotos</button>
-    <button class="botao botao-secundario" id="btnTentar" hidden>Tentar de novo as que faltaram</button>
-  </section>
+      <div class="conteudo">
+        <span class="recorte flor" aria-hidden="true"></span>
+        <p class="idade">15 anos</p>
+        <h1 class="nome">Milena Acosta</h1>
 
-</main>
+        <div class="divisor" aria-hidden="true">
+          <svg class="p" viewBox="0 0 24 24"><path d="M12 6l1.2 4.8L18 12l-4.8 1.2L12 18l-1.2-4.8L6 12l4.8-1.2z"/></svg>
+          <svg class="g" viewBox="0 0 24 24"><path d="M12 0l2.2 9.8L24 12l-9.8 2.2L12 24l-2.2-9.8L0 12l9.8-2.2z"/></svg>
+          <svg class="p" viewBox="0 0 24 24"><path d="M12 6l1.2 4.8L18 12l-4.8 1.2L12 18l-1.2-4.8L6 12l4.8-1.2z"/></svg>
+        </div>
+
+        <ul class="infos">
+          <li><a id="linkAgenda" target="_blank" rel="noopener" aria-label="Adicionar à agenda: 23 de janeiro de 2027">
+            <svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4M8 13.5h.01M12 13.5h.01M16 13.5h.01M8 17h.01M12 17h.01M16 17h.01"/></svg>
+            <span class="data">23 / 01 / 2027</span></a></li>
+          <li>
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+            20h</li>
+          <li><a id="linkMapa" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>
+            <span>Salão das Águas</span></a></li>
+          <li>
+            <svg viewBox="0 0 24 24"><path d="M10 6.5a2 2 0 1 1 3 1.7c-.6.4-1 .9-1 1.6v1.2M12 11L3.2 17.4c-.8.6-.4 1.6.5 1.6h16.6c.9 0 1.3-1 .5-1.6L12 11z"/></svg>
+            Traje: Esporte Fino</li>
+          <li><a id="linkPresentes" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><rect x="3.5" y="8.5" width="17" height="4.5"/><path d="M5 13v7.5h14V13M12 8.5v12M12 8.5C10.5 5 7 4.5 6.6 6.4S9 8.5 12 8.5zm0 0c1.5-3.5 5-4 5.4-2.1S15 8.5 12 8.5z"/></svg>
+            <span>Sugestões de presentes</span></a></li>
+        </ul>
+
+        <div class="divisor" aria-hidden="true">
+          <svg class="p" viewBox="0 0 24 24"><path d="M12 6l1.2 4.8L18 12l-4.8 1.2L12 18l-1.2-4.8L6 12l4.8-1.2z"/></svg>
+          <svg class="g" viewBox="0 0 24 24"><path d="M12 0l2.2 9.8L24 12l-9.8 2.2L12 24l-2.2-9.8L0 12l9.8-2.2z"/></svg>
+          <svg class="p" viewBox="0 0 24 24"><path d="M12 6l1.2 4.8L18 12l-4.8 1.2L12 18l-1.2-4.8L6 12l4.8-1.2z"/></svg>
+        </div>
+
+        <a class="confirmar" id="linkWhats" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M4 20l1.2-3.9A8.5 8.5 0 1 1 8.1 19z"/><path d="M9.2 8.2c-.4 3.2 3.4 7 6.6 6.6l.7-1.6-2-1-.9.8c-1-.5-2.1-1.6-2.6-2.6l.8-.9-1-2z"/></svg>
+          Confirmar presença
+        </a>
+        <p class="prazo">até 05/01/2027</p>
+      </div>
+    </article>
+  </main>
 
 <script>
-  // ===== CONFIGURAÇÃO (preencha aqui) =====
-  const NOME_DO_EVENTO = 'Aniversário de 15 anos!';
-  const URL_DO_SCRIPT  = 'https://script.google.com/macros/s/AKfycbzaF1DOPYv61SqUYLqGSfdZKFI-yx-WH0mkYycXljIsPmZP95-Uqi077dxnTbC1V9xCqQ/exec'; // igual à do Code.gs
-  const CHAVE_EVENTO   = 'Teste_15_anos'; // igual à do Code.gs
-  const LADO_MAXIMO    = 2400;  // pixels; reduz o peso sem perder qualidade visível
-  const QUALIDADE_JPEG = 0.88;
-  // ========================================
+  // ===== DADOS DO EVENTO (preencha aqui) =====
+  const ENDERECO         = 'Salão das Águas';   // endereço completo para o Maps
+  const WHATSAPP         = '';                  // só números com DDI e DDD, ex.: '5511999998888'
+  const LISTA_PRESENTES  = '';                  // link da lista de presentes
+  const MSG_CONFIRMACAO  = 'Olá! Quero confirmar minha presença nos 15 anos da Milena. Nome(s): ';
+  // ===========================================
 
   const $ = id => document.getElementById(id);
-  $('titulo').textContent = NOME_DO_EVENTO;
-  document.title = 'Fotos - ' + NOME_DO_EVENTO;
 
-  // Lembra o nome digitado na próxima vez
-  try { $('nome').value = localStorage.getItem('nomeConvidado') || ''; } catch (e) {}
+  $('linkMapa').href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(ENDERECO);
+  $('linkAgenda').href = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+    + '&text=' + encodeURIComponent('15 anos da Milena Acosta')
+    + '&dates=20270123T230000Z/20270124T050000Z'      // 20h às 2h (horário de Brasília)
+    + '&location=' + encodeURIComponent(ENDERECO);
+  if (WHATSAPP) $('linkWhats').href = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(MSG_CONFIRMACAO);
+  if (LISTA_PRESENTES) $('linkPresentes').href = LISTA_PRESENTES;
 
-  let pendentes = [];
+  const corpo = document.body;
+  // Atalho para testes: seusite/#convite pula o envelope
+  if (location.hash === '#convite') {
+    corpo.classList.add('aberto');
+    corpo.classList.remove('fechado');
+    $('abertura').remove();
+  }
+  const reduzido = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  $('btnEscolher').onclick = () => $('arquivos').click();
-  $('btnMais').onclick = () => { mostrar('telaInicio'); $('arquivos').click(); };
-  $('btnTentar').onclick = () => enviarTodas(pendentes);
-
-  $('arquivos').onchange = e => {
-    const lista = Array.from(e.target.files || []);
-    e.target.value = '';
-    if (lista.length) enviarTodas(lista);
-  };
-
-  function mostrar(tela) {
-    ['telaInicio', 'telaEnviando', 'telaFim'].forEach(t => $(t).hidden = (t !== tela));
+  function abrir() {
+    if (corpo.classList.contains('abrindo')) return;
+    corpo.classList.add('abrindo');
+    const t = reduzido ? 50 : 1400;
+    setTimeout(() => {
+      document.getElementById('abertura').classList.add('sumindo');
+      corpo.classList.add('aberto');
+      corpo.classList.remove('fechado');
+    }, t);
+    setTimeout(() => document.getElementById('abertura').remove(), t + 1000);
   }
 
-  async function enviarTodas(lista) {
-    const nome = $('nome').value.trim();
-    try { localStorage.setItem('nomeConvidado', nome); } catch (e) {}
-
-    mostrar('telaEnviando');
-    const falharam = [];
-    for (let i = 0; i < lista.length; i++) {
-      $('contador').textContent = (i + 1) + ' de ' + lista.length;
-      $('progresso').style.width = (i / lista.length * 100) + '%';
-      const deuCerto = await enviarComTentativas(lista[i], nome);
-      if (!deuCerto) falharam.push(lista[i]);
-    }
-    $('progresso').style.width = '100%';
-    pendentes = falharam;
-    terminar(lista.length, falharam.length);
-  }
-
-  function terminar(total, erros) {
-    const enviadas = total - erros;
-    if (erros === 0) {
-      $('msgFinal').textContent = 'Pronto! Obrigado! 🎉';
-      $('msgDetalhe').textContent = enviadas === 1 ? 'Sua foto foi enviada.' : 'Suas ' + enviadas + ' fotos foram enviadas.';
-      $('msgFinal').classList.remove('erro');
-      $('btnTentar').hidden = true;
-    } else {
-      $('msgFinal').textContent = enviadas ? 'Quase tudo certo!' : 'Não conseguimos enviar';
-      $('msgDetalhe').textContent = enviadas + ' enviada(s). ' + erros + ' não foi(foram). Verifique a internet e toque no botão abaixo.';
-      $('msgFinal').classList.toggle('erro', enviadas === 0);
-      $('btnTentar').hidden = false;
-    }
-    mostrar('telaFim');
-  }
-
-  async function enviarComTentativas(arquivo, nome) {
-    let preparado;
-    try { preparado = await prepararFoto(arquivo); }
-    catch (e) { return false; }
-
-    for (let tentativa = 1; tentativa <= 3; tentativa++) {
-      try {
-        const r = await fetch(URL_DO_SCRIPT, {
-          method: 'POST',
-          redirect: 'follow',
-          // text/plain evita bloqueio de CORS no Google Apps Script
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({
-            chave: CHAVE_EVENTO,
-            convidado: nome,
-            nomeArquivo: arquivo.name || 'foto',
-            tipo: preparado.tipo,
-            base64: preparado.base64
-          })
-        });
-        const json = await r.json();
-        if (json.ok) return true;
-        if (/chave|tipo|grande/.test(json.erro || '')) return false; // não adianta repetir
-      } catch (e) { /* rede instável: tenta de novo */ }
-      await new Promise(ok => setTimeout(ok, 1500 * tentativa));
-    }
-    return false;
-  }
-
-  // Reduz a foto para no máximo LADO_MAXIMO px (fica bem mais leve).
-  // Se o navegador não conseguir abrir a imagem, envia o arquivo original.
-  async function prepararFoto(arquivo) {
-    try {
-      const img = await carregarImagem(arquivo);
-      const escala = Math.min(1, LADO_MAXIMO / Math.max(img.width, img.height));
-      const canvas = document.createElement('canvas');
-      canvas.width = Math.round(img.width * escala);
-      canvas.height = Math.round(img.height * escala);
-      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-      const dataUrl = canvas.toDataURL('image/jpeg', QUALIDADE_JPEG);
-      return { tipo: 'image/jpeg', base64: dataUrl.split(',')[1] };
-    } catch (e) {
-      const dataUrl = await lerComoDataURL(arquivo);
-      return { tipo: arquivo.type || 'image/jpeg', base64: dataUrl.split(',')[1] };
-    }
-  }
-
-  function carregarImagem(arquivo) {
-    return new Promise((ok, falha) => {
-      const url = URL.createObjectURL(arquivo);
-      const img = new Image();
-      img.onload = () => { URL.revokeObjectURL(url); ok(img); };
-      img.onerror = () => { URL.revokeObjectURL(url); falha(new Error('imagem')); };
-      img.src = url;
-    });
-  }
-
-  function lerComoDataURL(arquivo) {
-    return new Promise((ok, falha) => {
-      const leitor = new FileReader();
-      leitor.onload = () => ok(leitor.result);
-      leitor.onerror = falha;
-      leitor.readAsDataURL(arquivo);
-    });
-  }
+  if ($('envelope')) $('envelope').addEventListener('click', abrir);
 </script>
 </body>
 </html>

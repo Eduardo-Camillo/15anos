@@ -1,0 +1,60 @@
+/* =========================================================
+   TEMA — 15 anos Milena Acosta
+   Identidade visual compartilhada por todas as páginas.
+   Fontes (colocar no <head> de cada página):
+   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Pinyon+Script&display=swap" rel="stylesheet">
+   ========================================================= */
+
+:root {
+  /* Verdes (envelope, fundos) */
+  --verde:          #1F3A2B;
+  --verde-profundo: #13251B;
+  --verde-cetim:    #3E6B50;
+
+  /* Pratas (ornamentos, selo, botões) */
+  --prata:          #C4C8C5;
+  --prata-clara:    #ECEEEC;
+  --prata-escura:   #8E938F;
+
+  /* Cartão */
+  --marfim:         #EEE9E2;
+  --grafite:        #3B3B39;
+
+  /* Tipografia */
+  --fonte-script: 'Pinyon Script', 'Great Vibes', cursive;
+  --fonte-texto:  'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; }
+
+body {
+  font-family: var(--fonte-texto);
+  color: var(--prata-clara);
+  background-color: var(--verde-profundo);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Fundo que imita o cetim verde da foto */
+.fundo-cetim {
+  background-color: var(--verde-profundo);
+  background-image:
+    radial-gradient(ellipse 70% 50% at 15% 25%, rgba(62,107,80,.55), transparent 60%),
+    radial-gradient(ellipse 60% 45% at 85% 75%, rgba(62,107,80,.40), transparent 60%),
+    repeating-linear-gradient(115deg,
+      rgba(255,255,255,.035) 0px,
+      rgba(0,0,0,.07) 70px,
+      rgba(255,255,255,.035) 140px),
+    linear-gradient(160deg, #1d3729, var(--verde-profundo));
+}
+
+/* Texto com efeito prata metálico */
+.texto-prata {
+  background: linear-gradient(180deg, var(--prata-clara) 0%, var(--prata) 45%, var(--prata-escura) 70%, var(--prata-clara) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.script { font-family: var(--fonte-script); font-weight: 400; }
