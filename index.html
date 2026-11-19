@@ -242,63 +242,272 @@
   .divisor .p { width: calc(22 * var(--s)); }
   .divisor .g { width: calc(54 * var(--s)); }
 
-  .infos {
-    list-style: none;
-    margin: 0 auto;
-    padding: 0;
+  a { color: inherit; text-decoration: none; }
+
+  /* Data: mês / SÁB | 23 | 20H / ano */
+  .data-bloco {
     display: inline-flex;
     flex-direction: column;
-    gap: calc(22 * var(--s));
-    text-align: left;
-    font-size: calc(44 * var(--s));
-    line-height: 1.15;
+    align-items: center;
+    text-transform: uppercase;
+    line-height: 1;
   }
-  .infos li, .infos a {
+  .mes, .ano {
+    font-size: calc(50 * var(--s));
+    font-weight: 600;
+    letter-spacing: .14em;
+    margin-right: -.14em;           /* compensa o espaçamento da última letra */
+  }
+  .linha-data {
     display: flex;
     align-items: center;
-    gap: calc(30 * var(--s));
+    gap: calc(34 * var(--s));
+    margin: calc(14 * var(--s)) 0;
   }
-  .infos svg, .confirmar svg {
-    flex: none;
-    width: calc(64 * var(--s));
-    height: calc(64 * var(--s));
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.6;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    filter: drop-shadow(0 1px 0 rgba(255,255,255,.8));
+  .lado {
+    width: calc(150 * var(--s));
+    padding: calc(16 * var(--s)) 0;
+    border-top: 1.5px solid rgba(59,59,57,.5);
+    border-bottom: 1.5px solid rgba(59,59,57,.5);
+    font-size: calc(44 * var(--s));
+    font-weight: 500;
+    letter-spacing: .08em;
   }
-  .infos .data { font-size: calc(54 * var(--s)); letter-spacing: .04em; }
-
-  a { color: inherit; text-decoration: none; }
-  .infos a span {
-    border-bottom: 1px dotted rgba(59,59,57,.55);
+  .dia {
+    font-size: calc(150 * var(--s));
+    font-weight: 500;
+    line-height: .9;
   }
-  .infos a:hover span, .infos a:focus-visible span { border-bottom-style: solid; }
-  .seta { font-size: .8em; opacity: .6; margin-left: -.4em; }
-
-  .confirmar {
-    display: inline-flex;
-    align-items: center;
-    gap: calc(22 * var(--s));
-    margin-top: calc(4 * var(--s));
-    padding: calc(18 * var(--s)) calc(40 * var(--s));
-    border: 1.5px solid rgba(59,59,57,.6);
-    border-radius: 999px;
-    font-size: calc(42 * var(--s));
-    font-weight: 600;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 1px 0 rgba(255,255,255,.7);
-    transition: background-color .2s;
-  }
-  .confirmar:hover, .confirmar:focus-visible { background-color: rgba(59,59,57,.07); }
-  .prazo {
-    margin: calc(16 * var(--s)) 0 0;
+  .local {
+    margin: calc(26 * var(--s)) 0 0;
     font-size: calc(40 * var(--s));
     font-style: italic;
   }
 
+  /* Ícones redondos */
+  .chamada {
+    margin: 0 0 calc(22 * var(--s));
+    font-size: calc(32 * var(--s));
+    font-style: italic;
+    letter-spacing: .02em;
+    opacity: .6;
+  }
+  .acoes {
+    display: flex;
+    justify-content: center;
+    gap: calc(24 * var(--s));
+  }
+  .acoes a {
+    flex: 0 1 calc(200 * var(--s));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(16 * var(--s));
+    -webkit-tap-highlight-color: transparent;
+  }
+  .icone {
+    display: grid;
+    place-items: center;
+    width: calc(148 * var(--s));
+    height: calc(148 * var(--s));
+    border-radius: 50%;
+    background: var(--verde);
+    color: var(--marfim);
+    box-shadow: 0 calc(6 * var(--s)) calc(16 * var(--s)) rgba(19,37,27,.35),
+                inset 0 1px 0 rgba(255,255,255,.25);
+    transition: transform .15s, background-color .2s;
+  }
+  .icone svg {
+    width: 46%;
+    height: 46%;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .acoes a:hover .icone, .acoes a:focus-visible .icone { background: var(--verde-cetim); }
+  .acoes a:active .icone { transform: scale(.94); }
+  .acoes a:focus-visible { outline: none; }
+  .acoes a:focus-visible .icone { outline: 2px solid var(--verde); outline-offset: 3px; }
+  .rotulo {
+    font-size: calc(31 * var(--s));
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+
+  .prazo, .traje {
+    margin: calc(30 * var(--s)) 0 0;
+    font-size: calc(36 * var(--s));
+    font-style: italic;
+  }
+  .traje {
+    margin-top: calc(10 * var(--s));
+    font-style: normal;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-size: calc(32 * var(--s));
+  }
+
   .conteudo { position: relative; }
+
+  /* ===== CONTAGEM REGRESSIVA ===== */
+  .contagem { margin-top: calc(44 * var(--s)); }
+  .faltam {
+    margin: 0 0 calc(10 * var(--s));
+    font-size: calc(46 * var(--s));
+    font-weight: 600;
+    letter-spacing: .14em;
+    margin-right: -.14em;
+    text-transform: uppercase;
+  }
+  .relogio {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: calc(10 * var(--s));
+  }
+  .unid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: calc(120 * var(--s));
+  }
+  .unid b {
+    font-size: calc(104 * var(--s));
+    font-weight: 500;
+    line-height: 1;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .unid small {
+    margin-top: calc(8 * var(--s));
+    font-size: calc(24 * var(--s));
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  .sep {
+    font-size: calc(88 * var(--s));
+    line-height: 1.05;
+    opacity: .7;
+  }
+
+  /* ===== FUMAÇA ===== */
+  .fumaca {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    z-index: 20;
+    pointer-events: none;
+  }
+
+  /* ===== PIX ===== */
+  .janela-pix {
+    width: min(calc(100vw - 32px), 400px);
+    padding: 28px 22px 22px;
+    border: 1px solid var(--prata);
+    border-radius: 10px;
+    background: var(--marfim);
+    color: var(--grafite);
+    font-family: var(--fonte-texto);
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,.35);
+  }
+  .janela-pix::backdrop { background: rgba(19,37,27,.6); }
+  .janela-pix h2 {
+    margin: 0 0 8px;
+    font-family: var(--fonte-script);
+    font-weight: 400;
+    font-size: 34px;
+    line-height: 1.1;
+  }
+  .pix-texto { margin: 0 0 12px; font-size: 17px; line-height: 1.35; }
+  .pix-favorecido { margin: 0 0 12px; font-size: 15px; letter-spacing: .06em; text-transform: uppercase; color: var(--prata-escura); }
+  .pix-codigo {
+    width: 100%; box-sizing: border-box;
+    padding: 10px; resize: none;
+    font: 13px/1.35 ui-monospace, Menlo, Consolas, monospace;
+    color: var(--grafite);
+    background: rgba(255,255,255,.6);
+    border: 1px dashed var(--prata-escura);
+    border-radius: 6px;
+    word-break: break-all;
+  }
+  .pix-copiar {
+    margin-top: 14px; width: 100%;
+    padding: 12px 16px;
+    font: 600 18px var(--fonte-texto);
+    letter-spacing: .04em;
+    color: var(--marfim);
+    background: var(--verde);
+    border: 0; border-radius: 6px; cursor: pointer;
+  }
+  .pix-copiar:hover, .pix-copiar:focus-visible { background: var(--verde-cetim); }
+  .pix-aviso { min-height: 1.3em; margin: 10px 0 0; font-size: 16px; font-style: italic; }
+  .pix-fechar {
+    position: absolute; top: 6px; right: 8px;
+    width: 40px; height: 40px; padding: 0;
+    font-size: 28px; line-height: 1;
+    color: var(--prata-escura); background: none; border: 0; cursor: pointer;
+  }
+
+  /* ===== CONFIRMAÇÃO ===== */
+  .janela-rsvp { max-height: calc(100svh - 32px); overflow-y: auto; text-align: left; }
+  .janela-rsvp h2 { text-align: center; }
+  .campo { display: block; margin: 0 0 14px; padding: 0; border: 0; min-width: 0; }
+  .campo > span, .campo legend {
+    display: block; margin-bottom: 6px; padding: 0;
+    font-size: 17px; font-weight: 600;
+  }
+  .janela-rsvp input[type="text"], .janela-rsvp select {
+    width: 100%; box-sizing: border-box;
+    padding: 10px 12px;
+    font: 17px var(--fonte-texto);       /* 16px+ evita o zoom automático no iPhone */
+    color: var(--grafite);
+    background: rgba(255,255,255,.75);
+    border: 1px solid var(--prata-escura);
+    border-radius: 6px;
+  }
+  .janela-rsvp input[type="text"]:focus, .janela-rsvp select:focus {
+    outline: 2px solid var(--verde-cetim); outline-offset: 1px; border-color: transparent;
+  }
+  .janela-rsvp .invalido { border-color: #A33A2E; background: #FBF1EF; }
+  .opcoes { display: flex; gap: 8px; }
+  .opcoes label { flex: 1; cursor: pointer; }
+  .opcoes input { position: absolute; opacity: 0; pointer-events: none; }
+  .opcoes span {
+    display: block; padding: 10px 6px;
+    text-align: center; font-size: 17px;
+    border: 1px solid var(--prata-escura); border-radius: 6px;
+    background: rgba(255,255,255,.5);
+    transition: background-color .15s, color .15s;
+  }
+  .opcoes input:checked + span { background: var(--verde); border-color: var(--verde); color: var(--marfim); }
+  .opcoes input:focus-visible + span { outline: 2px solid var(--verde-cetim); outline-offset: 2px; }
+  #nomesAcomp .campo { margin-bottom: 10px; }
+  #nomesAcomp .campo > span { font-weight: 400; font-size: 16px; }
+  .pix-copiar:disabled { opacity: .6; cursor: default; }
+  #rsvpFim { text-align: center; }
+  .rsvp-obrigado { margin: 6px 0 8px; font-size: 22px; font-weight: 600; }
+
+  /* ===== MÚSICA ===== */
+  .som {
+    position: fixed; z-index: 10;
+    right: max(16px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom));
+    width: 44px; height: 44px; border-radius: 50%;
+    display: grid; place-items: center; padding: 0; cursor: pointer;
+    color: var(--prata-clara);
+    background: rgba(19,37,27,.72);
+    border: 1px solid rgba(196,200,197,.45);
+    -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+    opacity: 0; pointer-events: none; transition: opacity .6s;
+  }
+  .aberto .som.pronto { opacity: 1; pointer-events: auto; }
+  .som:focus-visible { outline: 2px solid var(--prata); outline-offset: 3px; }
+  .som svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .som .mudo, .som.pausado .tocando { display: none; }
+  .som.pausado .mudo { display: block; }
 
   @media (prefers-reduced-motion: reduce) {
     .aba, #convite, #abertura { transition-duration: .01s; transition-delay: 0s; }
@@ -339,23 +548,16 @@
           <svg class="p" viewBox="0 0 24 24"><path d="M12 6l1.2 4.8L18 12l-4.8 1.2L12 18l-1.2-4.8L6 12l4.8-1.2z"/></svg>
         </div>
 
-        <ul class="infos">
-          <li><a id="linkAgenda" target="_blank" rel="noopener" aria-label="Adicionar à agenda: 23 de janeiro de 2027">
-            <svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4M8 13.5h.01M12 13.5h.01M16 13.5h.01M8 17h.01M12 17h.01M16 17h.01"/></svg>
-            <span class="data">23 / 01 / 2027</span></a></li>
-          <li>
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
-            20h</li>
-          <li><a id="linkMapa" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24"><path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>
-            <span>Salão das Águas</span></a></li>
-          <li>
-            <svg viewBox="0 0 24 24"><path d="M10 6.5a2 2 0 1 1 3 1.7c-.6.4-1 .9-1 1.6v1.2M12 11L3.2 17.4c-.8.6-.4 1.6.5 1.6h16.6c.9 0 1.3-1 .5-1.6L12 11z"/></svg>
-            Traje: Esporte Fino</li>
-          <li><a id="linkPresentes" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24"><rect x="3.5" y="8.5" width="17" height="4.5"/><path d="M5 13v7.5h14V13M12 8.5v12M12 8.5C10.5 5 7 4.5 6.6 6.4S9 8.5 12 8.5zm0 0c1.5-3.5 5-4 5.4-2.1S15 8.5 12 8.5z"/></svg>
-            <span>Sugestões de presentes</span></a></li>
-        </ul>
+        <a class="data-bloco" id="linkAgenda" target="_blank" rel="noopener" aria-label="Sábado, 23 de janeiro de 2027, às 20h. Adicionar à agenda">
+          <span class="mes">Janeiro</span>
+          <span class="linha-data">
+            <span class="lado">Sáb</span>
+            <span class="dia">23</span>
+            <span class="lado">20h</span>
+          </span>
+          <span class="ano">2027</span>
+        </a>
+        <p class="local">Salão das Águas</p>
 
         <div class="divisor" aria-hidden="true">
           <svg class="p" viewBox="0 0 24 24"><path d="M12 6l1.2 4.8L18 12l-4.8 1.2L12 18l-1.2-4.8L6 12l4.8-1.2z"/></svg>
@@ -363,32 +565,272 @@
           <svg class="p" viewBox="0 0 24 24"><path d="M12 6l1.2 4.8L18 12l-4.8 1.2L12 18l-1.2-4.8L6 12l4.8-1.2z"/></svg>
         </div>
 
-        <a class="confirmar" id="linkWhats" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24"><path d="M4 20l1.2-3.9A8.5 8.5 0 1 1 8.1 19z"/><path d="M9.2 8.2c-.4 3.2 3.4 7 6.6 6.6l.7-1.6-2-1-.9.8c-1-.5-2.1-1.6-2.6-2.6l.8-.9-1-2z"/></svg>
-          Confirmar presença
-        </a>
-        <p class="prazo">até 05/01/2027</p>
+        <p class="chamada">Toque nos ícones abaixo</p>
+        <nav class="acoes">
+          <a id="linkMapa" target="_blank" rel="noopener">
+            <span class="icone"><svg viewBox="0 0 24 24"><path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg></span>
+            <span class="rotulo">Localização no Maps</span>
+          </a>
+          <a id="linkConfirmar" href="#" role="button" aria-haspopup="dialog">
+            <span class="icone"><svg viewBox="0 0 24 24"><path d="M5.5 12.5l4.2 4.2 8.8-9.2"/></svg></span>
+            <span class="rotulo">Confirmar presença</span>
+          </a>
+          <a id="linkPresentes" href="#" role="button" aria-haspopup="dialog">
+            <span class="icone"><svg viewBox="0 0 24 24"><rect x="3.5" y="8.5" width="17" height="4.5"/><path d="M5 13v7.5h14V13M12 8.5v12M12 8.5C10.5 5 7 4.5 6.6 6.4S9 8.5 12 8.5zm0 0c1.5-3.5 5-4 5.4-2.1S15 8.5 12 8.5z"/></svg></span>
+            <span class="rotulo">Presente via Pix</span>
+          </a>
+        </nav>
+        <p class="prazo">Confirme sua presença até 05/01/2027</p>
+        <p class="traje">Traje: esporte fino</p>
+
+        <div class="contagem" id="contagem" role="timer" aria-live="off">
+          <p class="faltam" id="faltam">Faltam</p>
+          <div class="relogio" id="relogio">
+            <span class="unid"><b id="cDias">--</b><small>dias</small></span>
+            <span class="sep" aria-hidden="true">:</span>
+            <span class="unid"><b id="cHoras">--</b><small>horas</small></span>
+            <span class="sep" aria-hidden="true">:</span>
+            <span class="unid"><b id="cMin">--</b><small>minutos</small></span>
+            <span class="sep" aria-hidden="true">:</span>
+            <span class="unid"><b id="cSeg">--</b><small>segundos</small></span>
+          </div>
+        </div>
       </div>
     </article>
   </main>
 
+  <!-- Confirmação de presença -->
+  <dialog id="janelaRsvp" class="janela-pix janela-rsvp" aria-labelledby="tituloRsvp">
+    <h2 id="tituloRsvp">Confirmar presença</h2>
+    <form id="formRsvp" novalidate>
+      <label class="campo">
+        <span>Seu nome completo</span>
+        <input id="rsvpNome" name="nome" type="text" autocomplete="name" maxlength="120" required>
+      </label>
+
+      <fieldset class="campo">
+        <legend>Você vai à festa?</legend>
+        <div class="opcoes">
+          <label><input type="radio" name="vai" value="sim"><span>Sim, eu vou!</span></label>
+          <label><input type="radio" name="vai" value="nao"><span>Não poderei ir</span></label>
+        </div>
+      </fieldset>
+
+      <div id="blocoAcomp" hidden>
+        <label class="campo">
+          <span>Quantas pessoas vão com você?</span>
+          <select id="rsvpQtd"></select>
+        </label>
+        <div id="nomesAcomp"></div>
+      </div>
+
+      <button type="submit" class="pix-copiar" id="btnEnviarRsvp">Enviar confirmação</button>
+      <p class="pix-aviso" id="avisoRsvp" role="status" aria-live="polite"></p>
+    </form>
+
+    <div id="rsvpFim" hidden>
+      <p class="rsvp-obrigado" id="rsvpMsg"></p>
+      <p class="pix-texto" id="rsvpDetalhe"></p>
+      <button class="pix-copiar" id="btnOkRsvp">Fechar</button>
+    </div>
+    <button class="pix-fechar" id="btnFecharRsvp" aria-label="Fechar">&times;</button>
+  </dialog>
+
+  <!-- Pix -->
+  <dialog id="janelaPix" class="janela-pix" aria-labelledby="tituloPix">
+    <h2 id="tituloPix">Presente via Pix</h2>
+    <p class="pix-texto">Copie o código abaixo e cole no app do seu banco, na opção <strong>Pix Copia e Cola</strong>.</p>
+    <p class="pix-favorecido">Milena de Oliveira Acosta</p>
+    <textarea id="codigoPix" class="pix-codigo" readonly rows="4" aria-label="Código Pix"></textarea>
+    <button class="pix-copiar" id="btnCopiarPix">Copiar código Pix</button>
+    <p class="pix-aviso" id="avisoPix" role="status" aria-live="polite"></p>
+    <button class="pix-fechar" id="btnFecharPix" aria-label="Fechar">&times;</button>
+  </dialog>
+
+  <!-- Música: coloque o arquivo em musica/abertura.mp3 -->
+  <audio id="musica" src="musica/abertura.mp3" preload="none" loop></audio>
+  <button class="som pausado" id="btnSom" aria-label="Tocar música" aria-pressed="false">
+    <svg class="tocando" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>
+    <svg class="mudo" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
+  </button>
+
 <script>
   // ===== DADOS DO EVENTO (preencha aqui) =====
-  const ENDERECO         = 'Salão das Águas';   // endereço completo para o Maps
-  const WHATSAPP         = '';                  // só números com DDI e DDD, ex.: '5511999998888'
-  const LISTA_PRESENTES  = '';                  // link da lista de presentes
-  const MSG_CONFIRMACAO  = 'Olá! Quero confirmar minha presença nos 15 anos da Milena. Nome(s): ';
+  const ENDERECO         = 'Salão das Águas';   // aparece no evento da agenda
+  const LINK_MAPS        = 'https://maps.app.goo.gl/qE5D284sGcDr4ohB8'; // link "Compartilhar" do Google Maps
+  const URL_CONFIRMACAO  = 'https://script.google.com/macros/s/AKfycbzSm52FLwfnzEKkLcYEqj0IGSGBx6EJGGQsIHPCcpLRe1aikOxEWuZfAmFzNdwn-XUXnw/exec';                  // URL do Apps Script da planilha (termina em /exec)
+  const CHAVE_CONFIRMACAO = 'Milena15';         // igual à CHAVE_EVENTO do confirmacao.gs
+  const MAX_ACOMPANHANTES = 10;
+  const CODIGO_PIX       = '00020126360014br.gov.bcb.pix0114+55559914164645204000053039865802BR5925MILENA DE OLIVEIRA ACOSTA6009Sao Paulo62290525REC6AFB9C7C2840335456817063040C53';
   // ===========================================
 
   const $ = id => document.getElementById(id);
 
-  $('linkMapa').href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(ENDERECO);
+  $('linkMapa').href = LINK_MAPS;
   $('linkAgenda').href = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
     + '&text=' + encodeURIComponent('15 anos da Milena Acosta')
     + '&dates=20270123T230000Z/20270124T050000Z'      // 20h às 2h (horário de Brasília)
-    + '&location=' + encodeURIComponent(ENDERECO);
-  if (WHATSAPP) $('linkWhats').href = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(MSG_CONFIRMACAO);
-  if (LISTA_PRESENTES) $('linkPresentes').href = LISTA_PRESENTES;
+    + '&location=' + encodeURIComponent(ENDERECO)
+    + '&details=' + encodeURIComponent('Como chegar: ' + LINK_MAPS);
+  // ===== CONFIRMAÇÃO DE PRESENÇA =====
+  const janelaRsvp = $('janelaRsvp');
+  const formRsvp = $('formRsvp');
+
+  for (let i = 0; i <= MAX_ACOMPANHANTES; i++) {
+    $('rsvpQtd').add(new Option(i === 0 ? 'Só eu' : i + (i === 1 ? ' pessoa' : ' pessoas'), i));
+  }
+  try { $('rsvpNome').value = localStorage.getItem('rsvpNome') || ''; } catch (e) {}
+
+  function valorVai() {
+    const marcado = formRsvp.querySelector('input[name="vai"]:checked');
+    return marcado ? marcado.value : '';
+  }
+
+  // Mostra um campo de nome para cada acompanhante (mantém o que já foi digitado)
+  function montarAcompanhantes() {
+    const qtd = +$('rsvpQtd').value;
+    const caixa = $('nomesAcomp');
+    const atuais = Array.from(caixa.querySelectorAll('input')).map(i => i.value);
+    caixa.innerHTML = '';
+    for (let i = 0; i < qtd; i++) {
+      const rotulo = document.createElement('label');
+      rotulo.className = 'campo';
+      rotulo.innerHTML = '<span></span><input type="text" maxlength="120" autocomplete="off">';
+      rotulo.firstChild.textContent = 'Nome do ' + (i + 1) + 'º acompanhante';
+      rotulo.lastChild.value = atuais[i] || '';
+      caixa.appendChild(rotulo);
+    }
+  }
+
+  formRsvp.addEventListener('change', e => {
+    if (e.target.name === 'vai') $('blocoAcomp').hidden = valorVai() !== 'sim';
+    if (e.target.id === 'rsvpQtd') montarAcompanhantes();
+    if (e.target.classList) e.target.classList.remove('invalido');
+  });
+  formRsvp.addEventListener('input', e => e.target.classList.remove('invalido'));
+
+  $('linkConfirmar').addEventListener('click', e => {
+    e.preventDefault();
+    formRsvp.hidden = false;
+    $('rsvpFim').hidden = true;
+    $('avisoRsvp').textContent = '';
+    janelaRsvp.showModal();
+  });
+  const fecharRsvp = () => janelaRsvp.close();
+  $('btnFecharRsvp').addEventListener('click', fecharRsvp);
+  $('btnOkRsvp').addEventListener('click', fecharRsvp);
+  janelaRsvp.addEventListener('click', e => { if (e.target === janelaRsvp) fecharRsvp(); });
+
+  formRsvp.addEventListener('submit', async e => {
+    e.preventDefault();
+    const aviso = $('avisoRsvp');
+    const nome = $('rsvpNome').value.trim();
+    const vai = valorVai();
+    const camposAcomp = vai === 'sim' ? Array.from($('nomesAcomp').querySelectorAll('input')) : [];
+
+    // Validação
+    if (nome.split(/\s+/).length < 2) {
+      $('rsvpNome').classList.add('invalido'); $('rsvpNome').focus();
+      aviso.textContent = 'Escreva seu nome completo (nome e sobrenome).'; return;
+    }
+    if (!vai) { aviso.textContent = 'Conte pra gente se você vai à festa.'; return; }
+    const vazio = camposAcomp.find(c => !c.value.trim());
+    if (vazio) {
+      vazio.classList.add('invalido'); vazio.focus();
+      aviso.textContent = 'Preencha o nome de todos os acompanhantes.'; return;
+    }
+    if (!URL_CONFIRMACAO) { aviso.textContent = 'A confirmação ainda não está configurada.'; return; }
+
+    const btn = $('btnEnviarRsvp');
+    btn.disabled = true; btn.textContent = 'Enviando…'; aviso.textContent = '';
+    const corpoEnvio = JSON.stringify({
+      chave: CHAVE_CONFIRMACAO, nome, vai,
+      acompanhantes: camposAcomp.map(c => c.value.trim())
+    });
+
+    let resp = null;
+    for (let tentativa = 1; tentativa <= 3 && !(resp && resp.ok); tentativa++) {
+      try {
+        const r = await fetch(URL_CONFIRMACAO, {
+          method: 'POST', redirect: 'follow',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },   // evita bloqueio de CORS no Apps Script
+          body: corpoEnvio
+        });
+        resp = await r.json();
+        if (resp.erro && /chave|nome/.test(resp.erro)) break;          // não adianta repetir
+      } catch (erro) { /* rede instável: tenta de novo */ }
+      if (!(resp && resp.ok) && tentativa < 3) await new Promise(ok => setTimeout(ok, 1500 * tentativa));
+    }
+    btn.disabled = false; btn.textContent = 'Enviar confirmação';
+
+    if (!(resp && resp.ok)) {
+      aviso.textContent = 'Não conseguimos enviar. Verifique sua internet e tente de novo.'; return;
+    }
+    try { localStorage.setItem('rsvpNome', nome); } catch (e2) {}
+    const total = 1 + camposAcomp.length;
+    $('rsvpMsg').textContent = vai === 'sim' ? 'Presença confirmada!' : 'Obrigado por avisar!';
+    $('rsvpDetalhe').textContent = vai === 'sim'
+      ? (total === 1 ? 'Te esperamos' : 'Esperamos vocês (' + total + ' pessoas)') + ' no dia 23 de janeiro, às 20h.'
+      : 'Vamos sentir sua falta. Se mudar de ideia, é só responder de novo.';
+    if (resp.atualizado) $('rsvpDetalhe').textContent += ' (Sua resposta anterior foi atualizada.)';
+    formRsvp.hidden = true;
+    $('rsvpFim').hidden = false;
+    $('btnOkRsvp').focus();
+  });
+  // ===== CONTAGEM REGRESSIVA =====
+  const INICIO_FESTA = new Date('2027-01-23T20:00:00-03:00');   // horário de Brasília
+  const FIM_FESTA    = new Date('2027-01-24T02:00:00-03:00');
+
+  function atualizarContagem() {
+    const agora = Date.now();
+    const falta = INICIO_FESTA - agora;
+    if (falta <= 0) {
+      $('relogio').hidden = true;
+      if (agora < FIM_FESTA) $('faltam').textContent = 'A festa começou!';
+      else $('contagem').hidden = true;
+      clearInterval(timerContagem);
+      return;
+    }
+    const s = Math.floor(falta / 1000);
+    const dois = n => String(n).padStart(2, '0');
+    $('cDias').textContent  = Math.floor(s / 86400);
+    $('cHoras').textContent = dois(Math.floor(s / 3600) % 24);
+    $('cMin').textContent   = dois(Math.floor(s / 60) % 60);
+    $('cSeg').textContent   = dois(s % 60);
+    $('contagem').setAttribute('aria-label',
+      'Faltam ' + Math.floor(s / 86400) + ' dias e ' + Math.floor(s / 3600) % 24 + ' horas para a festa');
+  }
+  const timerContagem = setInterval(atualizarContagem, 1000);
+  atualizarContagem();
+
+  // ===== PIX =====
+  const janelaPix = $('janelaPix');
+  $('codigoPix').value = CODIGO_PIX;
+
+  $('linkPresentes').addEventListener('click', e => {
+    e.preventDefault();
+    $('avisoPix').textContent = '';
+    janelaPix.showModal();
+    $('btnCopiarPix').focus();
+  });
+  $('btnFecharPix').addEventListener('click', () => janelaPix.close());
+  // Fecha ao tocar fora da janela
+  janelaPix.addEventListener('click', e => { if (e.target === janelaPix) janelaPix.close(); });
+  $('codigoPix').addEventListener('focus', e => e.target.select());
+
+  $('btnCopiarPix').addEventListener('click', async () => {
+    let copiou = false;
+    try { await navigator.clipboard.writeText(CODIGO_PIX); copiou = true; }
+    catch (e) {
+      // Navegadores antigos: copia selecionando o texto
+      const campo = $('codigoPix');
+      campo.focus(); campo.setSelectionRange(0, campo.value.length);
+      try { copiou = document.execCommand('copy'); } catch (e2) {}
+    }
+    $('avisoPix').textContent = copiou
+      ? 'Código copiado! Agora é só colar no app do banco.'
+      : 'Não deu para copiar automaticamente. Toque no código, selecione tudo e copie.';
+  });
 
   const corpo = document.body;
   // Atalho para testes: seusite/#convite pula o envelope
@@ -399,9 +841,138 @@
   }
   const reduzido = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // ===== MÚSICA =====
+  const VOLUME_MUSICA = 0.6;
+  const musica = $('musica'), btnSom = $('btnSom');
+  let querMusica = false;   // a pessoa quer ouvir (não pausou no botão)
+
+  function marcarSom(tocando) {
+    btnSom.classList.toggle('pausado', !tocando);
+    btnSom.setAttribute('aria-pressed', tocando);
+    btnSom.setAttribute('aria-label', tocando ? 'Pausar música' : 'Tocar música');
+  }
+
+  function tocar() {
+    musica.volume = 0;
+    return musica.play().then(() => {
+      btnSom.classList.add('pronto');
+      marcarSom(true);
+      // entrada suave em ~2 s
+      const passo = setInterval(() => {
+        musica.volume = Math.min(VOLUME_MUSICA, musica.volume + VOLUME_MUSICA / 20);
+        if (musica.volume >= VOLUME_MUSICA || musica.paused) clearInterval(passo);
+      }, 100);
+    });
+  }
+
+  btnSom.addEventListener('click', () => {
+    querMusica = musica.paused;
+    if (querMusica) tocar().catch(() => {});
+    else { musica.pause(); marcarSom(false); }
+  });
+
+  // Pausa ao sair da página (ex.: ao abrir o WhatsApp) e retoma ao voltar
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) musica.pause();
+    else if (querMusica) tocar().catch(() => {});
+  });
+
+  // Se o arquivo não existir ou não carregar, o botão simplesmente não aparece
+  musica.addEventListener('error', () => btnSom.remove());
+
+  // Com o atalho #convite não há toque no envelope: mostra o botão para tocar manualmente
+  if (location.hash === '#convite') btnSom.classList.add('pronto');
+
+  // ===== FUMAÇA AO ABRIR =====
+  // Nuvens desenhadas no próprio navegador (sem imagens extras para baixar).
+  function criarNuvem(tamanho) {
+    const c = document.createElement('canvas');
+    c.width = c.height = tamanho;
+    const g = c.getContext('2d');
+    const meio = tamanho / 2;
+    // vários "flocos" macios sobrepostos formam uma nuvem irregular
+    for (let i = 0; i < 18; i++) {
+      const ang = Math.random() * Math.PI * 2;
+      const dist = Math.random() * tamanho * 0.22;
+      const x = meio + Math.cos(ang) * dist, y = meio + Math.sin(ang) * dist;
+      const r = tamanho * (0.14 + Math.random() * 0.2);
+      const tom = 225 + Math.floor(Math.random() * 30);     // branco / prata
+      const grad = g.createRadialGradient(x, y, 0, x, y, r);
+      grad.addColorStop(0, `rgba(${tom},${tom},${tom + (tom < 255 ? 1 : 0)},.55)`);
+      grad.addColorStop(1, 'rgba(255,255,255,0)');
+      g.fillStyle = grad;
+      g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill();
+    }
+    // borda bem suave
+    g.globalCompositeOperation = 'destination-in';
+    const borda = g.createRadialGradient(meio, meio, meio * 0.35, meio, meio, meio);
+    borda.addColorStop(0, '#000'); borda.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = borda; g.fillRect(0, 0, tamanho, tamanho);
+    return c;
+  }
+
+  function soltarFumaca(origemX, origemY) {
+    const tela = document.createElement('canvas');
+    tela.className = 'fumaca';
+    tela.width = innerWidth; tela.height = innerHeight;
+    document.body.appendChild(tela);
+    const g = tela.getContext('2d');
+
+    const nuvens = [0, 1, 2, 3].map(() => criarNuvem(256));
+    const base = Math.max(innerWidth, innerHeight);
+    const QTD = innerWidth < 600 ? 40 : 60;
+    const facil = x => 1 - Math.pow(1 - x, 3);                // desacelera
+    const p = Array.from({ length: QTD }, (_, i) => {
+      const ang = Math.random() * Math.PI * 2;
+      return {
+        img: nuvens[i % 4],
+        atraso: Math.random() * 250,
+        vida: 2600 + Math.random() * 1400,
+        dx: Math.cos(ang) * base * (0.15 + Math.random() * 0.45),
+        dy: Math.sin(ang) * base * (0.15 + Math.random() * 0.45) - base * 0.05, // sobe um pouco
+        r0: base * 0.08,
+        r1: base * (0.35 + Math.random() * 0.35),
+        giro: (Math.random() - 0.5) * 0.8,
+        ang0: Math.random() * Math.PI * 2,
+        opac: 0.65 + Math.random() * 0.35
+      };
+    });
+
+    const t0 = performance.now();
+    (function quadro(agora) {
+      const t = agora - t0;
+      g.clearRect(0, 0, tela.width, tela.height);
+      let vivas = 0;
+      for (const n of p) {
+        const k = (t - n.atraso) / n.vida;
+        if (k < 0) { vivas++; continue; }
+        if (k > 1) continue;
+        vivas++;
+        const e = facil(k);
+        const r = n.r0 + (n.r1 - n.r0) * e;
+        const alfa = n.opac * (k < 0.15 ? k / 0.15 : k < 0.45 ? 1 : 1 - (k - 0.45) / 0.55);
+        g.save();
+        g.globalAlpha = Math.max(0, alfa);
+        g.translate(origemX + n.dx * e, origemY + n.dy * e);
+        g.rotate(n.ang0 + n.giro * k);
+        g.drawImage(n.img, -r, -r, r * 2, r * 2);
+        g.restore();
+      }
+      if (vivas) requestAnimationFrame(quadro); else tela.remove();
+    })(t0);
+  }
+
   function abrir() {
     if (corpo.classList.contains('abrindo')) return;
     corpo.classList.add('abrindo');
+    if (!reduzido) {
+      const env = $('envelope').getBoundingClientRect();
+      // a fumaça sai no instante do toque
+      soltarFumaca(env.left + env.width / 2, env.top + env.height / 2);
+    }
+    // O toque no selo é o "gesto" que libera o som no celular
+    querMusica = true;
+    tocar().catch(() => { querMusica = false; });
     const t = reduzido ? 50 : 1400;
     setTimeout(() => {
       document.getElementById('abertura').classList.add('sumindo');
