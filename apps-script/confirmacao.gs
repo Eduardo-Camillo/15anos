@@ -93,8 +93,10 @@ function criarResumo(planilha) {
     ['Total de respostas', '']
   ]);
   r.getRange('B1').setFormula('=SUM(' + a + 'F2:F)');
-  r.getRange('B2').setFormula('=COUNTIF(' + a + 'C2:C,"Sim")');
-  r.getRange('B3').setFormula('=COUNTIF(' + a + 'C2:C,"Não")');
+  // SUMPRODUCT com um único argumento funciona em qualquer idioma da planilha
+  // (em português o separador é ";", em inglês é "," — COUNTIF quebraria num dos dois)
+  r.getRange('B2').setFormula('=SUMPRODUCT(' + a + 'C2:C="Sim")');
+  r.getRange('B3').setFormula('=SUMPRODUCT(' + a + 'C2:C="Não")');
   r.getRange('B4').setFormula('=SUM(' + a + 'D2:D)');
   r.getRange('B5').setFormula('=COUNTA(' + a + 'B2:B)');
   r.getRange('A1:B1').setFontWeight('bold');

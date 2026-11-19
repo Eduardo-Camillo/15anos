@@ -25,6 +25,12 @@
   }
 
   body.fechado { overflow: hidden; }
+  body {
+    -webkit-user-select: none; user-select: none;
+    -webkit-touch-callout: none;          /* sem menu de "copiar" ao segurar o dedo no iPhone */
+    -webkit-tap-highlight-color: transparent;
+  }
+  input, textarea, select { -webkit-user-select: text; user-select: text; }
 
   #abertura {
     position: fixed;
@@ -297,15 +303,15 @@
     justify-content: center;
     gap: calc(24 * var(--s));
   }
-  .acoes a {
+  .acao {
     flex: 0 1 calc(200 * var(--s));
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: calc(16 * var(--s));
-    -webkit-tap-highlight-color: transparent;
   }
   .icone {
+    -webkit-tap-highlight-color: transparent;
     display: grid;
     place-items: center;
     width: calc(148 * var(--s));
@@ -326,10 +332,9 @@
     stroke-linecap: round;
     stroke-linejoin: round;
   }
-  .acoes a:hover .icone, .acoes a:focus-visible .icone { background: var(--verde-cetim); }
-  .acoes a:active .icone { transform: scale(.94); }
-  .acoes a:focus-visible { outline: none; }
-  .acoes a:focus-visible .icone { outline: 2px solid var(--verde); outline-offset: 3px; }
+  .icone:hover, .icone:focus-visible { background: var(--verde-cetim); }
+  .icone:active { transform: scale(.94); }
+  .icone:focus-visible { outline: 2px solid var(--verde); outline-offset: 3px; }
   .rotulo {
     font-size: calc(31 * var(--s));
     font-weight: 600;
@@ -557,7 +562,7 @@
           </span>
           <span class="ano">2027</span>
         </a>
-        <p class="local">Salão das Águas</p>
+        <p class="local">Salão das Águias</p>
 
         <div class="divisor" aria-hidden="true">
           <svg class="p" viewBox="0 0 24 24"><path d="M12 6l1.2 4.8L18 12l-4.8 1.2L12 18l-1.2-4.8L6 12l4.8-1.2z"/></svg>
@@ -567,18 +572,18 @@
 
         <p class="chamada">Toque nos ícones abaixo</p>
         <nav class="acoes">
-          <a id="linkMapa" target="_blank" rel="noopener">
-            <span class="icone"><svg viewBox="0 0 24 24"><path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg></span>
-            <span class="rotulo">Localização no Maps</span>
-          </a>
-          <a id="linkConfirmar" href="#" role="button" aria-haspopup="dialog">
-            <span class="icone"><svg viewBox="0 0 24 24"><path d="M5.5 12.5l4.2 4.2 8.8-9.2"/></svg></span>
-            <span class="rotulo">Confirmar presença</span>
-          </a>
-          <a id="linkPresentes" href="#" role="button" aria-haspopup="dialog">
-            <span class="icone"><svg viewBox="0 0 24 24"><rect x="3.5" y="8.5" width="17" height="4.5"/><path d="M5 13v7.5h14V13M12 8.5v12M12 8.5C10.5 5 7 4.5 6.6 6.4S9 8.5 12 8.5zm0 0c1.5-3.5 5-4 5.4-2.1S15 8.5 12 8.5z"/></svg></span>
-            <span class="rotulo">Presente via Pix</span>
-          </a>
+          <div class="acao">
+            <a class="icone" id="linkMapa" target="_blank" rel="noopener" aria-label="Localização no Maps"><svg viewBox="0 0 24 24"><path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg></a>
+            <span class="rotulo" aria-hidden="true">Localização no Maps</span>
+          </div>
+          <div class="acao">
+            <a class="icone" id="linkConfirmar" href="#" role="button" aria-haspopup="dialog" aria-label="Confirmar presença"><svg viewBox="0 0 24 24"><path d="M5.5 12.5l4.2 4.2 8.8-9.2"/></svg></a>
+            <span class="rotulo" aria-hidden="true">Confirmar presença</span>
+          </div>
+          <div class="acao">
+            <a class="icone" id="linkPresentes" href="#" role="button" aria-haspopup="dialog" aria-label="Presente via Pix"><svg viewBox="0 0 24 24"><rect x="3.5" y="8.5" width="17" height="4.5"/><path d="M5 13v7.5h14V13M12 8.5v12M12 8.5C10.5 5 7 4.5 6.6 6.4S9 8.5 12 8.5zm0 0c1.5-3.5 5-4 5.4-2.1S15 8.5 12 8.5z"/></svg></a>
+            <span class="rotulo" aria-hidden="true">Presente via Pix</span>
+          </div>
         </nav>
         <p class="prazo">Confirme sua presença até 05/01/2027</p>
         <p class="traje">Traje: esporte fino</p>
@@ -656,7 +661,7 @@
 
 <script>
   // ===== DADOS DO EVENTO (preencha aqui) =====
-  const ENDERECO         = 'Salão das Águas';   // aparece no evento da agenda
+  const ENDERECO         = 'Salão das Águias';   // aparece no evento da agenda
   const LINK_MAPS        = 'https://maps.app.goo.gl/qE5D284sGcDr4ohB8'; // link "Compartilhar" do Google Maps
   const URL_CONFIRMACAO  = 'https://script.google.com/macros/s/AKfycbzSm52FLwfnzEKkLcYEqj0IGSGBx6EJGGQsIHPCcpLRe1aikOxEWuZfAmFzNdwn-XUXnw/exec';                  // URL do Apps Script da planilha (termina em /exec)
   const CHAVE_CONFIRMACAO = 'Milena15';         // igual à CHAVE_EVENTO do confirmacao.gs
