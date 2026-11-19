@@ -271,7 +271,7 @@
     margin: calc(14 * var(--s)) 0;
   }
   .lado {
-    width: calc(150 * var(--s));
+    width: calc(175 * var(--s));
     padding: calc(16 * var(--s)) 0;
     border-top: 1.5px solid rgba(59,59,57,.5);
     border-bottom: 1.5px solid rgba(59,59,57,.5);
@@ -553,12 +553,12 @@
           <svg class="p" viewBox="0 0 24 24"><path d="M12 6l1.2 4.8L18 12l-4.8 1.2L12 18l-1.2-4.8L6 12l4.8-1.2z"/></svg>
         </div>
 
-        <a class="data-bloco" id="linkAgenda" target="_blank" rel="noopener" aria-label="Sábado, 23 de janeiro de 2027, às 20h. Adicionar à agenda">
+        <a class="data-bloco" id="linkAgenda" target="_blank" rel="noopener" aria-label="Sábado, 23 de janeiro de 2027, às 20h30. Adicionar à agenda">
           <span class="mes">Janeiro</span>
           <span class="linha-data">
             <span class="lado">Sáb</span>
             <span class="dia">23</span>
-            <span class="lado">20h</span>
+            <span class="lado">20h30</span>
           </span>
           <span class="ano">2027</span>
         </a>
@@ -674,7 +674,7 @@
   $('linkMapa').href = LINK_MAPS;
   $('linkAgenda').href = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
     + '&text=' + encodeURIComponent('15 anos da Milena Acosta')
-    + '&dates=20270123T230000Z/20270124T050000Z'      // 20h às 2h (horário de Brasília)
+    + '&dates=20270123T233000Z/20270124T050000Z'      // 20h30 às 2h (horário de Brasília)
     + '&location=' + encodeURIComponent(ENDERECO)
     + '&details=' + encodeURIComponent('Como chegar: ' + LINK_MAPS);
   // ===== CONFIRMAÇÃO DE PRESENÇA =====
@@ -775,7 +775,7 @@
     const total = 1 + camposAcomp.length;
     $('rsvpMsg').textContent = vai === 'sim' ? 'Presença confirmada!' : 'Obrigado por avisar!';
     $('rsvpDetalhe').textContent = vai === 'sim'
-      ? (total === 1 ? 'Te esperamos' : 'Esperamos vocês (' + total + ' pessoas)') + ' no dia 23 de janeiro, às 20h.'
+      ? (total === 1 ? 'Te esperamos' : 'Esperamos vocês (' + total + ' pessoas)') + ' no dia 23 de janeiro, às 20h30.'
       : 'Vamos sentir sua falta. Se mudar de ideia, é só responder de novo.';
     if (resp.atualizado) $('rsvpDetalhe').textContent += ' (Sua resposta anterior foi atualizada.)';
     formRsvp.hidden = true;
@@ -783,7 +783,7 @@
     $('btnOkRsvp').focus();
   });
   // ===== CONTAGEM REGRESSIVA =====
-  const INICIO_FESTA = new Date('2027-01-23T20:00:00-03:00');   // horário de Brasília
+  const INICIO_FESTA = new Date('2027-01-23T20:30:00-03:00');   // horário de Brasília
   const FIM_FESTA    = new Date('2027-01-24T02:00:00-03:00');
 
   function atualizarContagem() {
