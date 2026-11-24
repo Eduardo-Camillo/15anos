@@ -335,6 +335,23 @@
     stroke-linecap: round;
     stroke-linejoin: round;
   }
+  /* Pulso em volta dos ícones, igual ao halo do envelope (em verde, por causa do fundo marfim) */
+  .icone { position: relative; }
+  .icone::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: pulso-icone 2.2s ease-out infinite;
+  }
+  .acao:nth-child(2) .icone::after { animation-delay: .25s; }
+  .acao:nth-child(3) .icone::after { animation-delay: .5s; }
+  @keyframes pulso-icone {
+    0%   { box-shadow: 0 0 0 0 rgba(31,58,43,.45); }
+    70%  { box-shadow: 0 0 0 calc(26 * var(--s)) rgba(31,58,43,0); }
+    100% { box-shadow: 0 0 0 0 rgba(31,58,43,0); }
+  }
   .icone:hover, .icone:focus-visible { background: var(--verde-cetim); }
   .icone:active { transform: scale(.94); }
   .icone:focus-visible { outline: 2px solid var(--verde); outline-offset: 3px; }
@@ -519,7 +536,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .aba, #convite, #abertura { transition-duration: .01s; transition-delay: 0s; }
-    .halo { animation: none; }
+    .halo, .icone::after { animation: none; }
   }
 </style>
 </head>
